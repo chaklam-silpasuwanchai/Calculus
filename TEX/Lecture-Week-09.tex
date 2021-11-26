@@ -1,0 +1,383 @@
+\documentclass[t]{beamer}
+\usetheme{Warsaw}
+\usecolortheme{seahorse}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath,mathrsfs,amsfonts}
+%\usepackage[colorhighlight,display]{texpower}
+%\usepackage{caption}
+%\usepackage[all]{xy}
+\usepackage{beamerthemesplit}
+\mode<presentation>
+%\usepackage{pause}
+\usepackage{ulem}  % for strikethroughs
+\usepackage{cancel} % for strikethroughs in math mode 
+\usepackage{tikz}
+\usepackage{calc}
+\usetikzlibrary{shapes}
+\usepackage{hyperref}
+\hypersetup{pdfpagemode=FullScreen}
+\usepackage{ifthen}
+\usepackage{animate}
+\usepackage{color}
+\usepackage{type1cm}  % used for watermarking
+\usepackage{eso-pic}  % used for watermarking
+
+
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}[prop]{Theorem}
+\newtheorem{lem}[prop]{Lemma}
+\newtheorem{cor}[prop]{Corollary}
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}
+\newtheorem{rem}[prop]{Remark}
+\newtheorem{ex}{Example}[section]
+%\newtheorem{note}{Note}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newcommand{\nin}{\noindent}
+\newcommand{\ds}{\displaystyle}
+\renewcommand{\figurename}{Figure \arabic{figure}}
+
+
+
+\renewcommand*\familydefault{\sfdefault} 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% some commands that have different meaning in the article/presentation modes
+
+\newcommand{\vvfill}{\mode<presentation>{\vfill}  \mode<article>{\medskip}}   %vfill in presentation only
+\newcommand{\sketchspace}{ 
+\mode<article>{ \medskip\noindent{\textbf{Sketch:}} \vspace*{6cm} }
+\mode<presentation>{ } 
+}
+\newcommand{\examplespace}{ 
+\mode<article>{ \medskip\noindent{\textbf{Example:}} \vspace{6cm} }
+\mode<presentation>{ } 
+}
+\newcommand{\artsmspace}{\mode<article>{\vspace*{2cm}} }  %small space in article mode
+\newcommand{\artlargespace}{\mode<article>{\vspace*{6cm}} }  %large space in article mode
+
+\newcommand{\dx}{\,dx}
+
+\newcommand{\soln}{{\textbf{Solution: }}\,\,\,}
+\newcommand{\disp}{\displaystyle}
+
+\newcommand{\makedate}{\vvfill
+\begin{picture}(10,10)  
+\put(260,-20){\mbox{\tiny{\today}}}
+\end{picture}
+}
+
+\newcommand{\pd}[2]{\dfrac{\partial#1}{\partial#2}}
+\newcommand{\pD}[2]{\dfrac{\partial^2#1}{\partial#2^2}}
+\newcommand{\pdd}[3]{\dfrac{\partial^2#1}{\partial#2 \partial#3}}
+
+
+\normalem %stops the ulem package making all the emphs into underlines...
+ 
+ 
+ 
+ \newcommand{\refandrev}[2]{
+ \begin{small}
+  \hspace{6cm}
+  \begin{minipage}[r]{8cm}
+  Stewart,    Chapter #1   \\
+  Review:  \parbox[t]{6cm}{#2}
+\end{minipage}
+\end{small}
+}
+
+
+
+\newcounter{heading}
+\setcounter{section}{1}
+\setcounter{heading}{0}
+
+\newcommand{\makeheading}[1]{\medskip\begin{large}\noindent\textbf{{#1}}\end{large}\smallskip}
+
+%\newenvironment{head}[1]{\medskip\stepcounter{heading}\noindent\textbf{\hspace{0.2cm}{#1}.}}{}
+\newcommand{\newhead}[1]{\medskip\stepcounter{heading}\noindent\textbf{\hspace{0.2cm}{#1}.}}
+
+
+\newcommand{\pf}[1]{\noindent\textit{Proof.}\vspace*{#1 cm}}
+\newcommand{\sol}[1]{\noindent\textit{Solution.}\vspace*{#1 cm}}
+\newcommand{\further}[1]{\begin{small}\noindent\textit{Further reading: #1}\end{small}}
+\newcommand{\exr}[1]{\begin{footnotesize}\noindent\textit{\textbf{Exercises:} Stewart #1}\end{footnotesize}}
+
+
+% Sets of numbers
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+% Partitions
+\newcommand{\PP}{\mathcal{P}}
+
+% Limits
+\newcommand{\limm}[1]{\displaystyle \lim_{x\to #1}}
+
+% Backslash
+\newcommand{\bs}{\backslash}
+
+% functions
+\newcommand{\cosec}{\mathrm{cosec}}
+\newcommand{\cosech}{\mathrm{cosech}}
+\newcommand{\sech}{\mathrm{sech}}
+\newcommand{\Li}{\mathrm{Li}}
+\newcommand{\si}{\mathrm{Si}}
+\newcommand{\erf}{\mathrm{erf}}
+
+% Domain and Range
+\newcommand{\Dom}{\mathrm{Dom}}
+\newcommand{\Codom}{\mathrm{Codom}}
+\newcommand{\Range}{\mathrm{Ran}}
+
+
+
+\title{Week 9:  Integration Techniques Part 1}
+%\date{October 2 -- October 5, 2012}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\setcounter{tocdepth}{2}
+\frame{\tableofcontents
+}
+
+\AtBeginSection[]
+{
+\begin{frame}<beamer> 
+\tableofcontents[currentsection]  % show TOC and highlight current section
+\end{frame}
+}
+
+
+\section{Integration by parts}
+
+\begin{frame}
+\frametitle{Integration by parts}
+
+Let's start with the product rule:
+\begin{align*}
+(f(x)g(x))' &= f'(x)g(x) + f(x)g'(x)\\
+ f(x)g'(x)  & = (f(x)g(x))'  - f'(x)g(x)\\
+\end{align*}
+
+\vspace{-1em}
+
+Integrating both sides, we get:
+\begin{align*}
+\displaystyle\int f(x)g'(x)\,dx &= f(x)g(x) - \int g(x)f'(x)\,dx
+\end{align*}
+
+If we let $u = f(x)$ and $v = g(x)$, so $du=f'(x)\,dx$ and $dv = g'(x)\,dx$, we obtain an equivalent (perhaps easier to memorize) formula:
+\[\displaystyle\int u\, dv = uv - \int v \, du.\]
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example} 
+
+Evaluate $ \int x e^{x} \, dx.$ \pause
+
+\medskip
+
+Let $u=x$,  $dv = e^x \,dx$,  $du = dx$,  and $v = e^x$
+
+\begin{align*}
+\int u\, dv &= uv - \int v \, du \\
+\int xe^x \,dx &= xe^x - \int e^x \,dx\\
+                       &= xe^x - e^x + C
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example} 
+
+Evaluate $ \int x \sin{x} \, dx.$ \pause
+
+\medskip
+
+Let $u=x$,  $dv = \sin{x} \,dx$,  $du = dx$,  and $v = -\cos{x}$
+
+\begin{align*}
+\int u\, dv &= uv - \int v \, du \\
+\int xe^x \,dx &= x(-\cos{x})- \int (-\cos{x}) \,dx\\
+                       &= -x\cos{x} + \sin{x} + C
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Exercise} 
+
+\begin{enumerate}
+	\item $\int \ln{x} \,dx$
+	\begin{itemize}
+		\item Ans: $x\ln{x} -x + C$ %Example 7.1.2
+	\end{itemize}
+	\item $\int t^2e^t \,dt$
+	\begin{itemize}
+		\item Ans: $t^2e^t - 2te^t + 2e^t + C$ %Example 7.1.3
+	\end{itemize}
+	\item $\int (x^2 + 2x)\cos x \dx$ %7.1.3 No. 7
+	\begin{itemize}
+		\item $(x^2 + 2x)\sin{x} + (2x + 2)\cos{x} - 2\sin{x} + C$
+	\end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+
+\section{Trigonometric integrals ($\sin^m{x}\cos^n{x})$}
+
+%\begin{frame}
+%\frametitle{Trigonometric integrals}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\noindent We examine integrals of the form
+%\begin{enumerate}
+%\item $\ds\int \sin^mx \cos^nx\,dx$
+%\item $\ds\int \tan^mx \sec^nx\,dx$
+%\end{enumerate}
+%
+%\vspace*{.5cm}
+%
+%\noindent There are some strategies to evaluating these integrals, but occasionally we must use some tricks and ingenuity.
+%
+%\noindent We begin by looking at integrals involving powers of $\sin x$ and $\cos x$.
+%\end{frame}
+
+\begin{frame}
+\footnotesize
+
+\[ \ds\int \sin^mx \cos^nx\,dx.\]
+There are two cases to consider.  The first case is if \textbf{at least one} of $m$ or $n$ is odd, and the second case is if \textbf{both} $m$ and $n$ are even.
+
+\newhead{Case 1: Integrals with an odd power of $\sin x$ \emph{or} an odd power of $\cos x$}
+\begin{itemize}
+\item If there is an odd power of $\sin x$ (i.e. if $m$ above is odd), we save one factor of $\sin x$ and use $\sin^2x=1-\cos^2x$ to express the remaining factors in terms of $\cos x$. Then substitute $u=\cos x$.
+\item If there is an odd power of $\cos x$ (i.e. if $n$ above is odd), we save one factor of $\cos x$ and use $\cos^2x=1-\sin^2x$ to express the remaining factors in terms of $\sin x$. Then substitute $u=\sin x$.
+\item If the powers of both $\sin x$ and $\cos x$ are odd, we may use either of the above strategies
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example} 
+
+Evaluate $\ds\int\cos^3x\,dx$.  \pause
+
+\begin{itemize}
+	\item $\ds\int\cos^3x\,dx = \ds\int\cos^2x \cdot \cos{x}\,dx = \ds\int 1 - \sin^2x \cdot \cos{x} \,dx$
+	\item Let $u = \sin{x}$ and $du = \cos{x} \,dx$
+	\item $\ds\int (1 - u^2)\,du = u - \frac{1}{3}u^3 + C = \sin{x} - \frac{1}{3}\sin^3{x} + C$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example} 
+
+Evaluate $\ds\int\sin^5x\cos^2x\,dx$. \pause
+
+\begin{itemize}
+	\item $\ds\int\sin^5x\cos^2x\,dx = \ds\int(\sin^2x)^2\cos^2x\sin{x}\,dx = (1-\cos^2{x})^2 \cos^2{x} \sin{x}\,dx$
+	\item Let $u = \cos{x}$ and $du = -\sin{x} \,dx$
+	\item $\ds\int (1 - u^2)^2 u^2 (-\,du) = -\ds\int (u^2 - 2u^4 + u^6) \,du = -\left(\dfrac{u^3}{3} - 2\dfrac{u^5}{5} + \dfrac{u^7}{7}\right) + C = -\dfrac{1}{3}\cos^3{x} + \dfrac{2}{5}\cos^5{x} - \dfrac{1}{7}\cos^7{x} + C$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Exercise} 
+
+Evaluate $\ds\int\sin^2x\cos^3x\,dx$. \pause
+
+\begin{itemize}
+	\item $\ds\int\sin^2x\cos^3x\,dx = \ds\int\sin^2x\cos^2x \cos{x}\,dx = \ds\int\sin^2x (1 - \sin^2x) \cos{x}\,dx$.
+	\item Let $u = \sin{x}$ and $du = \cos{x} \,dx$
+	\item $\ds\int u^2 (1-u^2) \,du = \ds\int(u^2 - u^4) \, du = \dfrac{1}{3}u^3 - \dfrac{1}{5}u^5 + C = \dfrac{1}{3}\sin^3{x} - \dfrac{1}{5}\sin^5{x} + C$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\newhead{Case 2: Integrals where both powers of $\sin x$ and $\cos x$ are even}
+
+We use the half-angle identities
+\begin{align*}
+\sin^2x&=\tfrac{1}{2}(1-\cos2x)\\
+\cos^2x&=\tfrac{1}{2}(1+\cos2x)\\ 
+%\intertext{and progressively lower the powers until the integral can be evaluated. Sometimes the identity
+%\sin x\cos x&=\tfrac{1}{2}\sin2x}
+\end{align*}
+
+It is also useful to use the identity:
+
+$$\sin{x}\cos{x} = \dfrac{1}{2}\sin{2x}$$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example} 
+
+Evaluate $\ds\int\sin^2x\,dx$.  \pause
+
+\begin{align*}
+\ds\int\sin^2x\,dx &= \dfrac{1}{2} \int (1 - \cos{2x}) \,dx\\
+                               &= \dfrac{1}{2} (x - \dfrac{1}{2}\sin{2x})
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example} 
+
+\footnotesize
+
+Evaluate $\ds\int\sin^2t \cos^4{t} \,dt$.  \pause
+
+\begin{align*}
+\ds\int\sin^2t \cos^4{t} \,dt &= \dfrac{1}{4} \int (4 \sin^2{t} \cos^2{t}) \cos^2{t} \,dt  \\
+                                               &= \dfrac{1}{4} \int (2 \sin{t} \cos{t})^2 \dfrac{1}{2}(1 + \cos{2t}) \,dt && \text{[half-angle identity]}\\
+                                               &= \dfrac{1}{8} \int (\sin{2t})^2 (1 + \cos{2t}) \,dt &&\text{[identity]}\\
+                                               &= \dfrac{1}{8} \int (\sin^2{2t} + \sin^2{2t}\cos{2t})\,dt \\
+	                                           &= \dfrac{1}{8} \int \sin^2{2t}\,dt + \dfrac{1}{8} \int  \sin^2{2t}\cos{2t}\,dt \\
+	                                           &= \dfrac{1}{8} \int \dfrac{1}{2}(1 - \cos{4t})\,dt + \dfrac{1}{8} \left(\dfrac{\sin^3{2t}}{6} \right) && \text{[Sub. u = $\sin{2t}$]}\\
+	                                           &= \dfrac{1}{16} \left(t - \dfrac{1}{4}\sin{4t}\right) + \dfrac{1}{8}\left(\dfrac{\sin^3{2t}}{6} \right) \\
+\end{align*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Exercise} 
+
+\footnotesize
+
+Evaluate $\ds\int\cos^4{2t} \,dt$.  \pause
+
+\begin{align*}
+\ds\int\cos^4{2t} \,dt &=  \ds\int (\cos^2{2t})^2\\
+ 									  &= \ds\int \left(\dfrac{1}{2}(1 + \cos{4t})\right)^2 && \text{[half-angle identity}] \\
+ 									  &= \ds\int \dfrac{1}{4}(1 + 2 \cos{4t} + \cos^2{4t})\,dt\\
+ 									 &= \dfrac{1}{4}\ds\int (1 + 2 \cos{4t} + \dfrac{1}{2}(1 + \cos{8t}))\,dt && \text{[half-angle identity}] \\
+ 									 &= \dfrac{1}{4}\ds\int (\dfrac{3}{2} + 2 \cos{4t} + \dfrac{1}{2}\cos{8t})\,dt \\
+ 									 &= \dfrac{1}{4}\left(\dfrac{3}{2}t + \dfrac{1}{2}\sin{4t} + \dfrac{1}{16}\sin{8t}\right)
+\end{align*}
+
+\end{frame}
+
+
+
+
+
+\end{document}

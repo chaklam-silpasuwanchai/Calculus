@@ -1,0 +1,453 @@
+\documentclass[t]{beamer}
+\usetheme{Warsaw}
+\usecolortheme{seahorse}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{amssymb,amsmath,mathrsfs,amsfonts}
+%\usepackage[colorhighlight,display]{texpower}
+%\usepackage{caption}
+%\usepackage[all]{xy}
+\usepackage{beamerthemesplit}
+\mode<presentation>
+%\usepackage{pause}
+\usepackage{ulem}  % for strikethroughs
+\usepackage{cancel} % for strikethroughs in math mode 
+\usepackage{tikz}
+\usepackage{calc}
+\usetikzlibrary{shapes}
+\usepackage{hyperref}
+\hypersetup{pdfpagemode=FullScreen}
+\usepackage{ifthen}
+\usepackage{animate}
+\usepackage{color}
+\usepackage{type1cm}  % used for watermarking
+\usepackage{eso-pic}  % used for watermarking
+\usepackage[absolute,overlay]{textpos}
+  \setlength{\TPHorizModule}{1mm}
+  \setlength{\TPVertModule}{1mm}
+
+
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}[prop]{Theorem}
+\newtheorem{lem}[prop]{Lemma}
+\newtheorem{cor}[prop]{Corollary}
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}
+\newtheorem{rem}[prop]{Remark}
+\newtheorem{ex}{Example}[section]
+%\newtheorem{note}{Note}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newcommand{\nin}{\noindent}
+\newcommand{\ds}{\displaystyle}
+\renewcommand{\figurename}{Figure \arabic{figure}}
+\renewcommand*\familydefault{\sfdefault} 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% some commands that have different meaning in the article/presentation modes
+
+\newcommand{\vvfill}{\mode<presentation>{\vfill}  \mode<article>{\medskip}}   %vfill in presentation only
+\newcommand{\sketchspace}{ 
+\mode<article>{ \medskip\noindent{\textbf{Sketch:}} \vspace*{6cm} }
+\mode<presentation>{ } 
+}
+\newcommand{\examplespace}{ 
+\mode<article>{ \medskip\noindent{\textbf{Example:}} \vspace{6cm} }
+\mode<presentation>{ } 
+}
+\newcommand{\artsmspace}{\mode<article>{\vspace*{2cm}} }  %small space in article mode
+\newcommand{\artlargespace}{\mode<article>{\vspace*{6cm}} }  %large space in article mode
+
+\newcommand{\dx}{\,dx}
+
+\newcommand{\soln}{{\textbf{Solution: }}\,\,\,}
+\newcommand{\disp}{\displaystyle}
+
+\newcommand{\makedate}{\vvfill
+\begin{picture}(10,10)  
+\put(260,-20){\mbox{\tiny{\today}}}
+\end{picture}
+}
+
+\newcommand{\pd}[2]{\dfrac{\partial#1}{\partial#2}}
+\newcommand{\pD}[2]{\dfrac{\partial^2#1}{\partial#2^2}}
+\newcommand{\pdd}[3]{\dfrac{\partial^2#1}{\partial#2 \partial#3}}
+
+
+\normalem %stops the ulem package making all the emphs into underlines...
+ 
+ 
+ 
+ \newcommand{\refandrev}[2]{
+ \begin{small}
+  \hspace{6cm}
+  \begin{minipage}[r]{8cm}
+  Stewart,    Chapter #1   \\
+  Review:  \parbox[t]{6cm}{#2}
+\end{minipage}
+\end{small}
+}
+
+
+
+\newcounter{heading}
+\setcounter{section}{1}
+\setcounter{heading}{0}
+
+\newcommand{\makeheading}[1]{\medskip\begin{large}\noindent\textbf{{#1}}\end{large}\smallskip}
+
+%\newenvironment{head}[1]{\medskip\stepcounter{heading}\noindent\textbf{\hspace{0.2cm}{#1}.}}{}
+\newcommand{\newhead}[1]{\medskip\stepcounter{heading}\noindent\textbf{\hspace{0.2cm}{#1}.}}
+
+
+\newcommand{\pf}[1]{\noindent\textit{Proof.}\vspace*{#1 cm}}
+\newcommand{\sol}[1]{\noindent\textit{Solution.}\vspace*{#1 cm}}
+\newcommand{\further}[1]{\begin{small}\noindent\textit{Further reading: #1}\end{small}}
+\newcommand{\exr}[1]{\begin{footnotesize}\noindent\textit{\textbf{Exercises:} Stewart #1}\end{footnotesize}}
+
+
+% Sets of numbers
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+% Partitions
+\newcommand{\PP}{\mathcal{P}}
+
+% Limits
+\newcommand{\limm}[1]{\displaystyle \lim_{n\to #1}}
+
+% Backslash
+\newcommand{\bs}{\backslash}
+
+% functions
+\newcommand{\cosec}{\mathrm{cosec}}
+\newcommand{\cosech}{\mathrm{cosech}}
+\newcommand{\sech}{\mathrm{sech}}
+\newcommand{\Li}{\mathrm{Li}}
+\newcommand{\si}{\mathrm{Si}}
+\newcommand{\erf}{\mathrm{erf}}
+
+% Domain and Range
+\newcommand{\Dom}{\mathrm{Dom}}
+\newcommand{\Codom}{\mathrm{Codom}}
+\newcommand{\Range}{\mathrm{Ran}}
+
+
+
+\title{Week 13: Series}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\setcounter{tocdepth}{2}
+\frame{\tableofcontents
+
+}
+
+\AtBeginSection[]
+{
+\begin{frame}<beamer> 
+\tableofcontents[currentsection]  % show TOC and highlight current section
+\end{frame}
+}
+
+\section{Geometric Series}
+
+\begin{frame}
+\footnotesize
+\frametitle{Series}
+
+\textbf{Definition}: Given a series $\displaystyle\sum_{n=1}^{\infty} a_n = a_1 + a_2 + a_3 + \cdots$,  let $s_n$ denote its $n$th partial sum:
+
+$$s_n = \sum_{i=1}^{n}a_i = a_1 + a_2 + \cdots + a_n$$
+
+If the sequence $\{s_n\}$ is convergent and $\limm{\infty} s_n = s$ exists as a real number, then the series $\sum a_n$ is called \textbf{convergent} and we write
+
+$$a_1 + a_2 + \cdots + a_n + \cdots = s \text{  or  } \sum_{n=1}^{\infty} a_n = s$$
+
+The number $s$ is called the \textbf{sum} of the series.  If the sequence $\{s_n\}$ is divergent, then the series is called \textbf{divergent}.
+
+\medskip
+
+Thus $\displaystyle\sum_{n=1}^{\infty} a_n = \limm{\infty} \sum_{i=1}^{n} a_i$
+
+\end{frame}
+
+\begin{frame}
+\footnotesize
+\frametitle{Geometric series}
+
+An important example of an infinite series is the \textbf{geometric series}.
+
+$$a + ar + ar^2 + ar^3 + \cdots + ar^{n-1} + \cdots = \sum_{n=1}^{\infty}ar^{n-1}  \qquad a \neq 0$$
+
+\begin{itemize}
+	\item If $r = 1$, the limit diverges to infinity because it becomes $n \cdot a$
+	\item If $r \neq 1$, then 
+\end{itemize}
+
+\begin{align*}
+	s_n &= a + ar + ar^2 + \cdots + ar^{n-1} \\
+	rs_n &= ar + ar^2 + \cdots + ar^{n-1} + ar^n && \text{multiply both sides by r} \\
+	s_n - rs_n &= a - ar^n && \text{substracting these two equations} \\
+	s_n &= \frac{a(1-r^n)}{1 - r}
+\end{align*}
+
+\begin{itemize}
+	\item If $-1 < r < 1$ (same as $|r| < 1$,)   then $\limm{\infty} s_n = \frac{a}{1-r}$ since $r^n \rightarrow 0$
+	\item If $r \leq 1$ or $r > 1$ (same as $|r| \geq 1$), then $\{ r^n \}$ is divergent since $r^n \rightarrow $ DNE
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example}
+
+Is the series $\displaystyle\sum_{n=1}^{\infty}2^{2n}3^{1-n}$ convergent? \pause
+
+\medskip
+
+Let's rewrite the $n$th term of the series in the form $ar^{n-1}$:
+
+$$\sum_{n=1}^{\infty} 2^{2n}3^{1-n} = \sum_{n=1}^{\infty}(2^2)^n 3^{-(n-1)} = \sum_{n=1}^{\infty} \frac{4^n}{3^{n-1}} = \sum_{n=1}^{\infty} 4 \frac{4}{3}^{n-1}$$
+
+We recognize this series as a geometric series with $a = 4$ and $r = \frac{4}{3}$.    Since $r > 1$, the
+series diverges.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example}
+A drug is administered to a patient at the same time every day.   Suppose the concentration of the drug is $C_n$ (measured in mg/mL) after the injection on the $n$th day.   Before the injection the next day,  only 3$0\%$ of the drug remains in the bloodstream and the daily dose raises the concentration by 0.2 mg/mL.  (a) Find the concentration after three days, (b) what is the concentration after the $n$th does? (c) what is the limiting concentration? \pause
+
+\medskip
+
+(a). The concentration after the next day is 
+
+\begin{align*}
+	C_{n+1} &= 0.2 + 0.3C_n\\
+	C_1 &= 0.2 + 0.3C_0 = 0.2\\
+	C_2 &= 0.2 + 0.3(C_1=0.2) = 0.26\\
+	C_3 &= 0.2 + 0.3(C_2=0.26) = 0.278\\
+\end{align*}
+
+\textit{(continued next slide)}
+
+\end{frame}
+
+\begin{frame}
+\textit{continued...}
+
+(b) After the $n$th does the concentration is
+
+$$C_n = 0.2 + 0.2(0.3) + 0.2(0.3)^2 + \cdots + 0.2(0.3)^{n-1}$$
+
+Given $a = 0.2$ and $r = 0.3$, so we have
+
+$$C_n = \frac{a(1 - r^n)}{1 - r} = \frac{0.2[1 - 0.3^n]}{1 - 0.3}=\frac{2}{7}[1 - (0.3)^n] \text{ mg/mL }$$
+
+(c) Since $0.3 < 1$, thus $r^n \rightarrow 0$, thus
+
+$$\limm{\infty} C_n = \limm{\infty}\frac{2}{7}(1 - 0) = \frac{2}{7} \text{ mg/mL }$$
+
+
+\end{frame}
+
+\begin{frame}
+\footnotesize
+\frametitle{Exercise}
+
+Determine whether the geometric series is convergent or divergent.  If it is convergent, find its sum.
+
+\begin{itemize}
+	\item $3 - 4 + \frac{16}{3} - \frac{64}{9}$ %stewart 11.2 No. 17
+		\begin{itemize}
+			\item Diverges
+		\end{itemize}
+	\item $4 + 3 + \frac{9}{3} + \frac{27}{16}$ %stewart 11.2 No. 18
+		\begin{itemize}
+			\item Converges at 16
+		\end{itemize}
+	\item $\displaystyle\sum_{n=1}^{\infty}12(0.73)^{n-1}$ %stewart 11.2 No. 21
+		\begin{itemize}
+			\item Converges at $\frac{400}{9}$
+		\end{itemize}
+	\item $\displaystyle\sum_{n=1}^{\infty}\frac{5}{\pi^n}$ %stewart 11.2 No. 22
+		\begin{itemize}
+			\item Converges at $\frac{5}{\pi - 1}$
+		\end{itemize}
+	\item $\displaystyle\sum_{n=1}^{\infty}\frac{6 \cdot 2^{2n-1}}{3^n}$ %stewart 11.2 No. 26
+	\begin{itemize}
+		\item Diverges
+	\end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
+
+\section{Power Series}
+
+\begin{frame}
+
+\footnotesize
+
+\frametitle{Power Series}
+
+A \textbf{power series} is a series of the form
+
+$$\sum_{n=0}^{\infty} c_nx^n = c_0 + c_1x + c_2x^2 + c_3x^3 + \cdots$$
+
+where $x$ is a variable and the $c_n$'s are constants called the coefficients of the series.   For each fixed $x$, the series is a series of constants that we can test for convergence or divergence.
+
+\medskip
+
+A power series may converge for some values of $x$ and diverge for other values of $x$.  For example, if we take $c_n = 1$ for all $n$, the power series becomes the geometric series
+
+$$\sum_{n=0}^{\infty}x^n = 1 + x + x^2 + \cdots + x^n + \cdots $$
+
+which converges when $-1 < x < 1$ and diverges when $|x| \geq 1$
+
+A \textbf{power series centered at} $a$ can be written in the form:
+
+$$\sum_{n=0}^{\infty} c_n(x-a)^n = c_0 + c_1(x - a) + c_2 (x - a)^2 + \cdots$$
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Ratio Test}
+
+\begin{itemize}
+	\item If $\limm{\infty} \displaystyle\left|\frac{a_{n+1}}{a_n}\right| = L < 1$, then the series $\displaystyle\sum_{n=1}^{\infty} a_n$ is convergent
+	\item If $\limm{\infty} \displaystyle\left|\frac{a_{n+1}}{a_n}\right| = L > 1$, then the series $\displaystyle\sum_{n=1}^{\infty} a_n$ is divergent
+	\item If $\limm{\infty} \displaystyle\left|\frac{a_{n+1}}{a_n}\right| =  1$, then the series $\displaystyle\sum_{n=1}^{\infty} a_n$ is inconclusive
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Example}
+
+Is $\displaystyle\sum_{n=1}^{\infty}(-1)^n \frac{n^3}{3^n}$ convergent? \pause
+
+\begin{align*}
+\displaystyle\left|\frac{a_{n+1}}{a_n}\right|  &= \left|  \frac{   \frac{(-1)^{n+1}(n + 1)^3}{3^{n + 1}}}{(-1)^n \frac{n^3}{3^n}}  \right| = \frac{(n + 1)^3}{3^{n + 1}} \cdot \frac{3^n}{n^3}\\
+&= \frac{1}{3}\left( \frac{n + 1}{n}\right)^3 = \frac{1}{3}\left( 1 + \frac{1}{n} \right)^3 \rightarrow \frac{1}{3} < 1
+\end{align*}
+
+Thus, by the Ratio Test, the given series is convergent.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Example}
+
+Let's try it on power series.  Is the series $\displaystyle\sum_{n=0}^{\infty} n!x^n$ convergent? \pause
+
+$$\limm{\infty}\left|\frac{a_{n+1}}{a_n}\right| = \limm{\infty}\left| \frac{(n + 1)!x^{n+1}}{n!x^n}\right| = \limm{\infty}(n + 1) |x| = \infty$$
+
+Thus, the series diverges when $x \neq 0$ and converges only when $x = 0$
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Example}
+
+For what values of $x$ does the series $\displaystyle\sum_{n=1}^{\infty}\frac{(x-3)^n}{n}$ converge? \pause
+
+\begin{align*}
+\limm{\infty}\left|\frac{a_{n+1}}{a_n}\right| &= \left| \frac{(x-3)^{n + 1}}{n + 1} \cdot \frac{n}{(x - 3)^n}  \right|\\
+&= \frac{1}{1 + \frac{1}{n}} |x - 3| \rightarrow |x - 3| \qquad \text{ as } n \rightarrow \infty
+\end{align*}
+
+By the Ratio Test, the given series is convergent when $|x - 3| < 1$ and divergent when $|x - 3| > 1$.  Now $|x - 3| < 1 \Leftrightarrow -1 < x - 3 < 1 \Leftrightarrow 2 < x < 4$,  thus the series converges when $2 < x < 4$ and diverges when $x < 2$ or $x > 4$.  
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Radius of convergence}
+
+For a given power series $\sum_{n=0}^{\infty} c_n (x - a)^n$, there are only three possibilities:
+
+\begin{itemize}
+	\item The series converges only when $x = a$
+	\item The series converges for all $x$
+	\item There is a positive number $R$ such that the series converges if $|x - a| < R$ and diverges if $|x - a| > R$
+\end{itemize}
+
+The number $R$ is called \textbf{radius of convergence}. 
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Example}
+
+Find the radius of convergence of $\sum_{n=0}^{\infty} \frac{(-3)^nx^n}{\sqrt{n + 1}}$ \pause
+
+\begin{align*}
+\limm{\infty}\left|\frac{a_{n+1}}{a_n}\right| &=  \left| \frac{(-3)^{n + 1} x^{n + 1}}{\sqrt{n + 2}} \cdot \frac{\sqrt{n + 1}}{(-3)^n x^n}\right| = \left| -3x \sqrt{\frac{n + 1}{n + 2}}\right|\\
+&= 3 \sqrt{\frac{1 + (1/n)}{1 + (2/n)}} |x| \rightarrow 3 |x| \qquad \text{ as } n \rightarrow \infty
+\end{align*}
+
+By the Ratio Test, the given series converges if $3 |x| < 1$ and diverges if $3 |x| > 1$.  Thus it converges if $|x| < \frac{1}{3}$ and diverges if $|x| > \frac{1}{3}$.  This means that the radius of convergence is $R = \frac{1}{3}$.
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Example}
+
+Find the radius of convergence of $\displaystyle\sum_{n=0}^{\infty} \frac{n(x + 2)^n}{3^{n + 1}}$ \pause
+
+\begin{align*}
+\limm{\infty}\left|\frac{a_{n+1}}{a_n}\right| &= \left| \frac{(n + 1)(x + 2)^{n + 1}}{3^{n + 2}} \cdot \frac{3^{n + 1}}{n(x + 2)^n}\right|\\
+&= \left(  1 + \frac{1}{n}  \right) \frac{|x + 2|}{3} \rightarrow \frac{|x + 2|}{3} \qquad \text{ as } n \rightarrow \infty
+\end{align*}
+
+By the Ratio Test, the given series converges if $\frac{|x + 2|}{3}< 1$ and diverges if $\frac{|x + 2|}{3} > 1$.  Thus it converges if $|x + 2| < 3$ and diverges if $|x + 2| > 3$.  This means that the radius of convergence is $R = 3$.
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Exercise}
+
+Find the radius of convergence.
+
+\begin{itemize}
+	\item $\displaystyle\sum_{n=1}^{\infty} (-1)^n nx^n$  %stewart 11.8 No. 3
+	\begin{itemize}
+		\item Ans: 1
+	\end{itemize}
+	\item $\displaystyle\sum_{n=1}^{\infty} \frac{x^n}{2n-1}$  %stewart 11.8 No. 5
+	\begin{itemize}
+		\item Ans: 1
+	\end{itemize}
+	\item $\displaystyle\sum_{n=1}^{\infty} \frac{(-1)^n 4^n}{\sqrt{n}}x^n$  %stewart 11.8 No. 11
+	\begin{itemize}
+		\item Ans: $\frac{1}{4}$
+	\end{itemize}
+	\item $\displaystyle\sum_{n=0}^{\infty} \frac{(x - 2)^n}{n^2 + 1}$  %stewart 11.8 No. 15
+	\begin{itemize}
+		\item Ans: 1
+	\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}
