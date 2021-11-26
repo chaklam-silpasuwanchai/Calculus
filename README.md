@@ -2,7 +2,7 @@
 
 This is the repository for the course Calculus I at Asian Institute of Technology.
 
-The course is based on Calculus textbook by James Stewart (https://www.amazon.com/Calculus-James-Stewart/dp/1285740629).  It is best used with its solution manual as all exercises all from the text book. The course is structured into the following topics:
+The course is based on Calculus textbook by James Stewart 8 ed. (https://www.amazon.com/Calculus-James-Stewart/dp/1285740629).  It is best used with its solution manual as all exercises all from the text book. The course is structured into the following topics:
 
 1. Limits and Continuity
 2. Derivatives
